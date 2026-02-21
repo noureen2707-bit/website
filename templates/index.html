@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admission Probability Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>College Admission Probability Tool</h1>
+
+    <form method="POST">
+        <label>Your Score:</label>
+        <input type="number" name="score" required>
+        
+        <label>Category:</label>
+        <select name="category">
+            <option>General</option>
+            <option>OBC</option>
+            <option>SC</option>
+            <option>ST</option>
+        </select>
+
+        <label>Desired College:</label>
+        <select name="college" required>
+            <option value="">-- Select College --</option>
+            <option>College A</option>
+            <option>College B</option>
+            <option>College C</option>
+        </select>
+
+        <label>Desired Branch:</label>
+        <select name="branch" required>
+            <option value="">-- Select Branch --</option>
+            <option>Computer Science</option>
+            <option>Mechanical</option>
+            <option>Civil</option>
+            <option>Electrical</option>
+            <option>Electronics</option>
+        </select>
+
+        <label>Maximum Annual Budget (in ₹):</label>
+        <input type="number" name="budget" placeholder="e.g., 500000" required>
+
+        <button type="submit">Check Probability</button>
+    </form>
+
+    {% if results %}
+        {% if results.error %}
+            <div style="border: 2px solid red; padding: 15px; margin-top: 20px; background-color: #ffe6e6; color: red;">
+                <strong>Error:</strong> {{ results.error }}
+            </div>
+        {% else %}
+            <h2>Results:</h2>
+            <div style="border: 1px solid #ccc; padding: 15px; margin-top: 20px; background-color: #f9f9f9;">
+                <h3>{{ results.college_name }}</h3>
+                <p><strong>Branch:</strong> {{ results.branch }}</p>
+                <p><strong>Annual Fee:</strong> ₹{{ results.fee_amount }}/year</p>
+                <p><strong>Your Budget:</strong> ₹{{ results.user_budget }}</p>
+                <p><strong>Fee Feasibility:</strong> 
+                    <span style="font-weight: bold; color: {% if results.fee_feasible %}green{% else %}red{% endif %};">
+                        {% if results.fee_feasible %}✓ Within Budget{% else %}✗ Exceeds Budget{% endif %}
+                    </span>
+                </p>
+                <hr>
+                <p><strong>Your Score:</strong> {{ results.your_score }}/100</p>
+                <p><strong>College Cutoff ({{ results.branch }}):</strong> {{ results.cutoff }}</p>
+                <p><strong>Probability of Admission:</strong> <span style="font-size: 1.3em; font-weight: bold; color: {% if results.probability > 70 %}green{% elif results.probability > 40 %}orange{% else %}red{% endif %};">{{ results.probability }}%</span></p>
+                <p><strong>Risk Level:</strong> <span style="color: {% if results.risk == 'Safe' %}green{% elif results.risk == 'Moderate' %}orange{% else %}red{% endif %}; font-weight: bold;">{{ results.risk }}</span></p>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
