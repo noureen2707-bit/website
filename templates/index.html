@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admission Probability Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>College Admission Probability Tool</h1>
+
+    <form method="POST" class="form-card">
+        <div class="form-group">
+            <label>Your Score:</label>
+            <input type="number" name="score" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Category:</label>
+            <select name="category">
+                <option>General</option>
+                <option>OBC</option>
+                <option>SC</option>
+                <option>ST</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Desired College:</label>
+            <select name="college" required>
+                <option value="">-- Select College --</option>
+                <option>College A</option>
+                <option>College B</option>
+                <option>College C</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Desired Branch:</label>
+            <select name="branch" required>
+                <option value="">-- Select Branch --</option>
+                <option>Computer Science</option>
+                <option>Mechanical</option>
+                <option>Civil</option>
+                <option>Electrical</option>
+                <option>Electronics</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Maximum Annual Budget (₹):</label>
+            <input type="number" name="budget" placeholder="e.g., 500000" required>
+        </div>
+
+        <button type="submit" class="btn">Check Probability</button>
+    </form>
+
+    {% if results %}
+    <div class="results-section">
+        {% if results.error %}
+            <div class="error-card">
+                <strong>Error:</strong> {{ results.error }}
+            </div>
+        {% else %}
+            <div class="result-card">
+                <h2>{{ results.college_name }}</h2>
+
+                <div class="result-grid">
+                    <div><strong>Branch:</strong> {{ results.branch }}</div>
+                    <div><strong>Annual Fee:</strong> ₹{{ results.fee_amount }}/year</div>
+                    <div><strong>Your Budget:</strong> ₹{{ results.user_budget }}</div>
+                    <div>
+                        <strong>Fee Feasibility:</strong>
+                        <span class="{{ 'success' if results.fee_feasible else 'danger' }}">
+                            {{ '✓ Within Budget' if results.fee_feasible else '✗ Exceeds Budget' }}
+                        </span>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="result-grid">
+                    <div><strong>Your Score:</strong> {{ results.your_score }}/100</div>
+                    <div><strong>Cutoff:</strong> {{ results.cutoff }}</div>
+                    <div>
+                        <strong>Probability:</strong>
+                        <span class="probability">{{ results.probability }}%</span>
+                    </div>
+                    <div>
+                        <strong>Risk Level:</strong>
+                        <span class="{{ results.risk | lower }}">{{ results.risk }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
